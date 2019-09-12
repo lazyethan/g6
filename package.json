@@ -81,6 +81,7 @@
   },
   "scripts": {
     "update": "rm -rf node_modules/ && tnpm i && rm -rf build && tnpm run build",
+    "mcbuild": "npm run build && cp /Users/fengyich/Sandbox/antvg6/g6/build/g6.js /Users/fengyich/eclipse-workspace/multiplecluster/Aspen/WebContent/lib/g6/g6.js",
     "build": "webpack",
     "build-lib": "babel src --out-dir lib",
     "dist": "npm run mkdir-dist && npm run build",

@@ -11,7 +11,7 @@ class CustomGroup {
   getDefaultCfg() {
     return {
       default: {
-        lineWidth: 1,
+        lineWidth: 5,
         stroke: '#A3B1BF',
         // lineDash: [ 5, 5 ],
         strokeOpacity: 0.9,
@@ -88,6 +88,9 @@ class CustomGroup {
       id: groupId,
       zIndex
     });
+
+    const groups = graph.get('groups');
+    console.log("Groups in Graph:", groups); // eslint-disable-line
 
     const autoPaint = graph.get('autoPaint');
     graph.setAutoPaint(false);
