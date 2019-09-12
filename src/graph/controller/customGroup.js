@@ -72,6 +72,28 @@ class CustomGroup {
     this.delegateInGroup = {};
   }
 
+  _getGroupStyleById(groupId, type) {
+    let style = this.styles[type],
+      groups = graph.get('groups'),
+      temp = groups.filter(g => g.id == groupId);
+    if (temp.length == 0) {
+      return style;
+    }
+    let group = temp[0]; //id matched, assume unique.
+    if (!group.styles || !group.styles[type]) {
+      return style;
+    }
+    return deepMix({}, style, group.styles[type]);
+  }
+
+  getGroupDefaultStyleById(groupId) {
+    return this._getGroupStyleById(groupId, 'default');
+  }
+
+  getGroupCollapseStyleById(groupId) {
+    return this._getGroupStyleById(groupId, 'collapse');
+  }
+
   /**
    * 生成群组
    * @param {string} groupId 群组ID
@@ -91,6 +113,7 @@ class CustomGroup {
 
     const groups = graph.get('groups');
     console.log("Groups in Graph:", groups); // eslint-disable-line
+    console.log("Style:", this.styles); // eslint-disable-line
 
     const autoPaint = graph.get('autoPaint');
     graph.setAutoPaint(false);
@@ -113,7 +136,8 @@ class CustomGroup {
       const cy = (height + 2 * y) / 2;
       keyShape = nodeGroup.addShape('circle', {
         attrs: {
-          ...defaultStyle,
+          //...defaultStyle,
+          ...this.getGroupDefaultStyleById(groupId),
           x: cx,
           y: cy,
           r: r + nodes.length * 10 + paddingValue
@@ -440,7 +464,8 @@ class CustomGroup {
     const { nodeGroup } = customGroup;
 
     // 收起群组后的默认样式
-    const { collapse } = this.styles;
+    //const { collapse } = this.styles;
+    const collapse = this.getGroupCollapseStyleById(id);
     const graph = this.graph;
     const groupType = graph.get('groupType');
 
@@ -632,7 +657,9 @@ class CustomGroup {
 
     const keyShape = nodeGroup.get('keyShape');
 
-    const { default: defaultStyle, collapse } = this.styles;
+    //const { default: defaultStyle, collapse } = this.styles;
+    const defaultStyle = this.getGroupDefaultStyleById(id);
+    const collapse = this.getGroupCollapseStyleById(id);
 
     for (const style in defaultStyle) {
       keyShape.attr(style, defaultStyle[style]);
