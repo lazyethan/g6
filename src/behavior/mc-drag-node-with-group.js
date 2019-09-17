@@ -213,6 +213,7 @@ module.exports = {
     // 拖出节点后，根据最新的节点数量，重新计算群组大小
     // 如果只有一个节点，拖出后，则删除该组
     if (nodes.length === 0) {
+      /*
       // step 1: 从groupNodes中删除
       delete groupNodes[groupId];
 
@@ -222,6 +223,7 @@ module.exports = {
 
       // step 3: 删除原来的群组
       currentGroup.remove();
+      */
     } else {
       const { x, y, width, height } = customGroupControll.calculationGroupPosition(nodes);
       // 检测操作的群组中是否包括子群组
