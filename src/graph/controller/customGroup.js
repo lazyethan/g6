@@ -94,6 +94,18 @@ class CustomGroup {
     return this._getGroupStyleById(groupId, 'collapse');
   }
 
+  getGeoParamsById(groupId) {
+    const groups = this.graph.get('groups'),
+      temp = groups.filter(g => g.id === groupId);
+    // console.log('Groups for Geo Params: ', groups);
+    if (temp.length === 0) {
+      return {};
+    }
+    const group = temp[0];
+    // console.log('Find a group: ', group);
+    return deepMix({}, group.geoParams);
+  }
+
   /**
    * 生成群组
    * @param {string} groupId 群组ID
@@ -134,12 +146,14 @@ class CustomGroup {
       const r = width > height ? width / 2 : height / 2;
       const cx = (width + 2 * x) / 2;
       const cy = (height + 2 * y) / 2;
+      const geoParams = this.getGeoParamsById(groupId);
+      // console.log(`Geo Params for (${groupId}):`, geoParams);
       keyShape = nodeGroup.addShape('circle', {
         attrs: {
           // ...defaultStyle,
           ...this.getGroupDefaultStyleById(groupId),
-          x: cx,
-          y: cy,
+          x: nodes.length === 0 ? geoParams.x || 0 : cx,
+          y: nodes.length === 0 ? geoParams.y || 0 : cy,
           r: r + nodes.length * 10 + paddingValue
         },
         capture: true,
