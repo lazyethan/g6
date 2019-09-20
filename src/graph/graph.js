@@ -551,9 +551,17 @@ class Graph extends EventEmitter {
 
       // 第二种情况，存在嵌套的群组，数据中有groups字段
       const groupNodes = Util.getAllNodeInGroups(data);
+      /*
       for (const groupId in groupNodes) {
         const tmpNodes = groupNodes[groupId];
         this.get('customGroupControll').create(groupId, tmpNodes, groupType, groupIndex);
+        groupIndex--;
+      }
+      */
+      for (const k in groups) {
+        const g = groups[k];
+        const tmpNodes = groupNodes[g.groupId != null ? g.groupId : g.id];
+        this.get('customGroupControll').createGroup(Util.deepMix({zIndex: groupIndex, nodes: tmpNodes}, g), false);
         groupIndex--;
       }
 

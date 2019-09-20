@@ -40,7 +40,7 @@ module.exports = {
       const keyShape = currentGroup.get('keyShape');
 
       this.inGroupId = groupId;
-      customGroupControll.setGroupStyle(keyShape, 'hover');
+      customGroupControll.setGroupStyle(keyShape, 'hover', groupId);
     }
   },
   /**
@@ -57,7 +57,7 @@ module.exports = {
       const currentGroup = customGroup[groupId].nodeGroup;
       const keyShape = currentGroup.get('keyShape');
 
-      customGroupControll.setGroupStyle(keyShape, 'default');
+      customGroupControll.setGroupStyle(keyShape, 'default', groupId);
     }
 
     if (!groupId) {
@@ -95,7 +95,7 @@ module.exports = {
         const customGroupControll = graph.get('customGroupControll');
         const customGroup = customGroupControll.customGroup;
         const currentGroup = customGroup[groupId].nodeGroup;
-        customGroupControll.setGroupStyle(currentGroup.get('keyShape'), 'hover');
+        customGroupControll.setGroupStyle(currentGroup.get('keyShape'), 'hover', groupId);
 
         // 初始拖动时候，如果是在当前群组中拖动，则赋值为当前groupId
         this.inGroupId = groupId;
@@ -145,9 +145,9 @@ module.exports = {
 
         // 当前
         if (this.inGroupId !== groupId) {
-          customGroupControll.setGroupStyle(keyShape, 'default');
+          customGroupControll.setGroupStyle(keyShape, 'default', groupId);
         } else {
-          customGroupControll.setGroupStyle(keyShape, 'hover');
+          customGroupControll.setGroupStyle(keyShape, 'hover', groupId);
         }
       }
     }
@@ -249,7 +249,7 @@ module.exports = {
 
       customGroupControll.setGroupOriginBBox(groupId, keyShape.getBBox());
     }
-    customGroupControll.setGroupStyle(keyShape, 'default');
+    customGroupControll.setGroupStyle(keyShape, 'default', groupId);
   },
   setCurrentGroupStyle(evt) {
     const { item } = evt;
@@ -305,7 +305,7 @@ module.exports = {
         // 拖入节点后，根据最新的节点数量，重新计算群组大小
         this.dynamicChangeGroupSize(evt, nodeInGroup, targetKeyShape);
       }
-      customGroupControll.setGroupStyle(keyShape, 'default');
+      customGroupControll.setGroupStyle(keyShape, 'default', groupId);
     } else if (this.inGroupId && !groupId) {
       // 将节点拖动到群组中
       const nodeInGroup = customGroup[this.inGroupId].nodeGroup;

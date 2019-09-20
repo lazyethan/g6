@@ -79,11 +79,12 @@ class CustomGroup {
     if (temp.length === 0) {
       return style;
     }
-    const group = temp[0];// id matched, assume unique.
-    if (!group.styles || !group.styles[type]) {
+    const group = temp[0],// id matched, assume unique.
+      key = `${type}Style`;
+    if (!group.styles || !group.styles[key]) {
       return style;
     }
-    return deepMix({}, style, group.styles[type]);
+    return deepMix({}, style, group.styles[key]);
   }
 
   getGroupDefaultStyleById(groupId) {
@@ -92,6 +93,10 @@ class CustomGroup {
 
   getGroupCollapseStyleById(groupId) {
     return this._getGroupStyleById(groupId, 'collapse');
+  }
+
+  getGroupHoverStyleById(groupId) {
+    return this._getGroupStyleById(groupId, 'hover');
   }
 
   getGeoParamsById(groupId) {
@@ -106,7 +111,10 @@ class CustomGroup {
     return deepMix({}, group.geoParams);
   }
 
-  createGroup({ groupId, nodes = [], type = 'circle', zIndex = 0, styles = {}, coord = {} }, updateDataModel = false) {
+  createGroup({ groupId = null, id, nodes = [], type = 'circle', zIndex = 0, styles = {}, coord = {} }, updateDataModel = false) {
+    if (groupId == null) {
+      groupId = id;
+    }
     const graph = this.graph;
     const customGroup = graph.get('customGroup');
     const nodeGroup = customGroup.addGroup({
@@ -297,12 +305,16 @@ class CustomGroup {
    * @param {Item} keyShape 群组的keyShape
    * @param {Object | String} style 样式
    */
-  setGroupStyle(keyShape, style) {
+  setGroupStyle(keyShape, style, groupId) {
     if (!keyShape || keyShape.get('destroyed')) {
       return;
     }
     let styles = {};
-    const { hover: hoverStyle, default: defaultStyle } = this.styles;
+    let { hover: hoverStyle, default: defaultStyle } = this.styles;
+    if (groupId != null) {
+      hoverStyle = this.getGroupHoverStyleById('hover');
+      defaultStyle = this.getGroupHoverStyleById('default');
+    }
     if (isString(style)) {
       if (style === 'default') {
         styles = deepMix({}, defaultStyle);
