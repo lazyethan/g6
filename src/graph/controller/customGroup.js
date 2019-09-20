@@ -106,16 +106,7 @@ class CustomGroup {
     return deepMix({}, group.geoParams);
   }
 
-  /**
-   * 生成群组
-   * @param {string} groupId 群组ID
-   * @param {array} nodes 群组中的节点集合
-   * @param {string} type 群组类型，默认为circle，支持rect
-   * @param {number} zIndex 群组层级，默认为0
-   * @param {boolean} updateDataModel 是否更新节点数据，默认为false，只有当手动创建group时才为true
-   * @memberof ItemGroup
-   */
-  createGroup({groupId, nodes = [], type = 'circle', zIndex = 0, styles = {}, coord = {}}, updateDataModel = false) {
+  createGroup({ groupId, nodes = [], type = 'circle', zIndex = 0, styles = {}, coord = {} }, updateDataModel = false) {
     const graph = this.graph;
     const customGroup = graph.get('customGroup');
     const nodeGroup = customGroup.addGroup({
@@ -126,8 +117,8 @@ class CustomGroup {
     const autoPaint = graph.get('autoPaint');
     graph.setAutoPaint(false);
 
-    //const { default: defaultStyle } = this.styles;
-    const defaultStyle = deepMixin({}, this.styles.default, styles.defaultStyle || {});
+    // const { default: defaultStyle } = this.styles;
+    const defaultStyle = deepMix({}, this.styles.default, styles.defaultStyle || {});
 
     // 计算群组左上角左边、宽度、高度及x轴方向上的最大值
     const { x, y, width, height, maxX } = this.calculationGroupPosition(nodes);
@@ -149,7 +140,7 @@ class CustomGroup {
       // console.log(`Geo Params for (${groupId}):`, geoParams);
       keyShape = nodeGroup.addShape('circle', {
         attrs: {
-           ...defaultStyle,
+          ...defaultStyle,
           x: nodes.length === 0 ? coord.x || 0 : cx,
           y: nodes.length === 0 ? coord.y || 0 : cy,
           r: r + nodes.length * 10 + paddingValue
@@ -217,14 +208,6 @@ class CustomGroup {
       id: groupId,
       zIndex
     });
-    
-    let styles = null;
-    if (typeof nodes === 'object' && nodes != null) {
-      // nodes is now actually group's model
-      styles = nodes.styles;
-      nodes = nodes.nodes;
-    }
-    
 
     const groups = graph.get('groups');
     console.log("Groups in Graph:", groups); // eslint-disable-line
