@@ -356,8 +356,9 @@ class Graph extends EventEmitter {
    */
   addItem(type, model) {
     if (type === 'group') {
-      const { groupId, nodes, type, zIndex } = model;
-      return this.get('customGroupControll').create(groupId, nodes, type, zIndex, true);
+      // const { groupId, nodes, type, zIndex } = model;
+      // return this.get('customGroupControll').create(groupId, nodes, type, zIndex, true);
+      return this.get('customGroupControll').createGroup(model, true);
     }
     return this.get('itemController').addItem(type, model);
   }

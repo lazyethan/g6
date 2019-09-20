@@ -115,6 +115,101 @@ class CustomGroup {
    * @param {boolean} updateDataModel 是否更新节点数据，默认为false，只有当手动创建group时才为true
    * @memberof ItemGroup
    */
+  createGroup({groupId, nodes = [], type = 'circle', zIndex = 0, styles = {}, coord = {}}, updateDataModel = false) {
+    const graph = this.graph;
+    const customGroup = graph.get('customGroup');
+    const nodeGroup = customGroup.addGroup({
+      id: groupId,
+      zIndex
+    });
+
+    const autoPaint = graph.get('autoPaint');
+    graph.setAutoPaint(false);
+
+    //const { default: defaultStyle } = this.styles;
+    const defaultStyle = deepMixin({}, this.styles.default, styles.defaultStyle || {});
+
+    // 计算群组左上角左边、宽度、高度及x轴方向上的最大值
+    const { x, y, width, height, maxX } = this.calculationGroupPosition(nodes);
+    const paddingValue = this.getGroupPadding(groupId);
+
+    const groupBBox = graph.get('groupBBoxs');
+    groupBBox[groupId] = { x, y, width, height, maxX };
+
+    // step 1：绘制群组外框
+    let keyShape = null;
+
+    if (type === 'circle') {
+      let r = width > height ? width / 2 : height / 2;
+      if (r < 0) {
+        r = 0;
+      }
+      const cx = (width + 2 * x) / 2;
+      const cy = (height + 2 * y) / 2;
+      // console.log(`Geo Params for (${groupId}):`, geoParams);
+      keyShape = nodeGroup.addShape('circle', {
+        attrs: {
+           ...defaultStyle,
+          x: nodes.length === 0 ? coord.x || 0 : cx,
+          y: nodes.length === 0 ? coord.y || 0 : cy,
+          r: r + nodes.length * 10 + paddingValue
+        },
+        capture: true,
+        zIndex,
+        groupId
+      });
+      // 更新群组及属性样式
+      this.setDeletageGroupByStyle(groupId, nodeGroup,
+        { width, height, x: cx, y: cy, r });
+    } else {
+      keyShape = nodeGroup.addShape('rect', {
+        attrs: {
+          ...defaultStyle,
+          x: x - paddingValue,
+          y: y - paddingValue,
+          width: width + nodes.length * 10 + paddingValue,
+          height: height + nodes.length * 10 + paddingValue
+        },
+        capture: true,
+        zIndex,
+        groupId
+      });
+      // 更新群组及属性样式
+      this.setDeletageGroupByStyle(groupId, nodeGroup,
+        { width, height, x, y, btnOffset: maxX - 3 });
+    }
+    nodeGroup.set('keyShape', keyShape);
+
+    // 设置graph中groupNodes的值
+    graph.get('groupNodes')[groupId] = nodes;
+
+    // 只有手动创建group时执行以下逻辑
+    if (updateDataModel) {
+      // 如果是手动创建group，则原始数据中是没有groupId信息的，需要将groupId添加到node中
+      nodes.forEach(nodeId => {
+        const node = graph.findById(nodeId);
+        const model = node.getModel();
+        if (!model.groupId) {
+          model.groupId = groupId;
+        }
+      });
+    }
+
+    this.setGroupOriginBBox(groupId, keyShape.getBBox());
+
+    graph.setAutoPaint(autoPaint);
+    graph.paint();
+  }
+
+  /**
+   * 生成群组
+   * @param {string} groupId 群组ID
+   * @param {array} nodes 群组中的节点集合
+   * @param {string} type 群组类型，默认为circle，支持rect
+   * @param {number} zIndex 群组层级，默认为0
+   * @param {boolean} updateDataModel 是否更新节点数据，默认为false，只有当手动创建group时才为true
+   * @memberof ItemGroup
+   */
   create(groupId, nodes, type = 'circle', zIndex = 0, updateDataModel = false) {
     const graph = this.graph;
     const customGroup = graph.get('customGroup');
@@ -122,6 +217,14 @@ class CustomGroup {
       id: groupId,
       zIndex
     });
+    
+    let styles = null;
+    if (typeof nodes === 'object' && nodes != null) {
+      // nodes is now actually group's model
+      styles = nodes.styles;
+      nodes = nodes.nodes;
+    }
+    
 
     const groups = graph.get('groups');
     console.log("Groups in Graph:", groups); // eslint-disable-line
@@ -143,7 +246,10 @@ class CustomGroup {
     let keyShape = null;
 
     if (type === 'circle') {
-      const r = width > height ? width / 2 : height / 2;
+      let r = width > height ? width / 2 : height / 2;
+      if (r <= 0) {
+        r = 10;
+      }
       const cx = (width + 2 * x) / 2;
       const cy = (height + 2 * y) / 2;
       const geoParams = this.getGeoParamsById(groupId);
