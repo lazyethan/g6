@@ -561,7 +561,7 @@ class Graph extends EventEmitter {
       for (const k in groups) {
         const g = groups[k];
         const tmpNodes = groupNodes[g.groupId != null ? g.groupId : g.id];
-        this.get('customGroupControll').createGroup(Util.deepMix({zIndex: groupIndex, nodes: tmpNodes}, g), false);
+        this.get('customGroupControll').createGroup(Util.deepMix({ zIndex: groupIndex, nodes: tmpNodes }, g), false);
         groupIndex--;
       }
 

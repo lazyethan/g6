@@ -79,7 +79,7 @@ class CustomGroup {
     if (temp.length === 0) {
       return style;
     }
-    const group = temp[0],// id matched, assume unique.
+    const group = temp[0], // id matched, assume unique.
       key = `${type}Style`;
     if (!group.styles || !group.styles[key]) {
       return style;
@@ -305,12 +305,13 @@ class CustomGroup {
    * @param {Item} keyShape 群组的keyShape
    * @param {Object | String} style 样式
    */
-  setGroupStyle(keyShape, style, groupId) {
+  setGroupStyle(keyShape, style/* , groupId */) {
     if (!keyShape || keyShape.get('destroyed')) {
       return;
     }
     let styles = {};
     let { hover: hoverStyle, default: defaultStyle } = this.styles;
+    const groupId = keyShape.get('groupId');
     if (groupId != null) {
       hoverStyle = this.getGroupHoverStyleById('hover');
       defaultStyle = this.getGroupHoverStyleById('default');
