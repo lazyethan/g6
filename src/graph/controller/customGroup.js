@@ -314,7 +314,7 @@ class CustomGroup {
     const groupId = keyShape.get('groupId');
     if (groupId != null) {
       hoverStyle = this.getGroupHoverStyleById('hover');
-      defaultStyle = this.getGroupHoverStyleById('default');
+      defaultStyle = this.getGroupDefaultStyleById('default');
     }
     if (isString(style)) {
       if (style === 'default') {
