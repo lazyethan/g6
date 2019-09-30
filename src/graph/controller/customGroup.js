@@ -305,7 +305,7 @@ class CustomGroup {
    * @param {Item} keyShape 群组的keyShape
    * @param {Object | String} style 样式
    */
-  setGroupStyle(keyShape, style/* , groupId */) {
+  setGroupStyle(keyShape, style) {
     if (!keyShape || keyShape.get('destroyed')) {
       return;
     }
