@@ -18,6 +18,7 @@ const behaviors = {
   'activate-relations': require('./activate-relations'),
   'brush-select': require('./brush-select'),
   'drag-group': require('./drag-group'),
+  'mc-drag-group': require('./mc-drag-group'),
   'drag-node-with-group': require('./drag-node-with-group'),
   'mc-drag-node-with-group': require('./mc-drag-node-with-group'),
   'collapse-expand-group': require('./collapse-expand-group')

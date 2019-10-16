@@ -111,7 +111,7 @@ class CustomGroup {
     return deepMix({}, group.geoParams);
   }
 
-  createGroup({ groupId = null, id, nodes = [], type = 'circle', zIndex = 0, styles = {}, coord = {} }, updateDataModel = false) {
+  createGroup({ groupId = null, id, nodes = [], type = 'circle', zIndex = 0, styles = {}, coord = {}, x: gx, y: gy }, updateDataModel = false) {
     if (groupId == null) {
       groupId = id;
     }
@@ -149,8 +149,8 @@ class CustomGroup {
       keyShape = nodeGroup.addShape('circle', {
         attrs: {
           ...defaultStyle,
-          x: nodes.length === 0 ? coord.x || 0 : cx,
-          y: nodes.length === 0 ? coord.y || 0 : cy,
+          x: nodes.length === 0 ? coord.x || gx || 0 : cx,
+          y: nodes.length === 0 ? coord.y || gy || 0 : cy,
           r: r + nodes.length * 10 + paddingValue
         },
         capture: true,
